@@ -1,6 +1,5 @@
 import { GetStaticProps } from "next";
-import { useContext } from 'react';
-import { playerContext } from '../contexts/PlayerContext'
+import {  usePlayer } from '../contexts/PlayerContext'
 import Link  from 'next/link';
 import Image from "next/image";
 import { api } from "../services/api";
@@ -28,7 +27,7 @@ type HomeProps = {
 
 export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
 
-  const { playList } = useContext(playerContext)
+  const { playList } = usePlayer();
 
   const episodeList = [...latestEpisodes, ...allEpisodes];
 

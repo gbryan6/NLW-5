@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { useContext, useRef, useEffect } from "react";
-import { playerContext } from "../../contexts/PlayerContext";
+import { useRef, useEffect } from "react";
+import { usePlayer } from "../../contexts/PlayerContext";
 import Slider from "rc-slider";
 
 import "rc-slider/assets/index.css";
@@ -20,8 +20,10 @@ const Player: React.FC = () => {
     playNext,
     playPrevious,
     hasNext,
+    isLooping,
+    toggleLoop,
     hasPrevious
-  } = useContext(playerContext);
+  } = usePlayer();
 
   useEffect(() => {
     if(!audioRef.current){
@@ -82,6 +84,7 @@ const Player: React.FC = () => {
               ref={audioRef}
               src={episode.url}
               autoPlay
+              loop={isLooping}
               onPlay={() => setPlayingState(true)}
               onPause={() => setPlayingState(false)}
             />
@@ -106,7 +109,12 @@ const Player: React.FC = () => {
           <button type="button" disabled={!episode || !hasNext} onClick={() => playNext()}>
             <img src="/play-next.svg" alt="Tocar proxima" />
           </button>
-          <button type="button" disabled={!episode}>
+          <button 
+          type="button" 
+          disabled={!episode}
+          onClick={() => toggleLoop()}
+          className={ isLooping ? styles.isActive : ''}
+          >
             <img src="/repeat.svg" alt="Repetir" />
           </button>
         </div>
