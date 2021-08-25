@@ -25,7 +25,8 @@ const Player: React.FC = () => {
     toggleLoop,
     hasPrevious,
     toggleShuffle,
-    isShuffling
+    isShuffling,
+    clearPlayerState
   } = usePlayer();
 
   function setupProgressListener(){
@@ -36,6 +37,18 @@ const Player: React.FC = () => {
     })
   }
 
+  function handleSeek(amount: number){
+    audioRef.current.currentTime = amount
+    setProgress(amount);
+  }
+
+  function handleEpisodeEnded() {
+    if(hasNext){
+      playNext()
+    }else{
+      clearPlayerState()
+    }
+  }
 
   useEffect(() => {
     if(!audioRef.current){
@@ -82,7 +95,8 @@ const Player: React.FC = () => {
             {episode ? 
             <Slider
             max={episode.duration}
-            value={progress} 
+            value={progress}
+            onChange={handleSeek} 
             trackStyle={{ backgroundColor: '#04d361' }} 
             railStyle={{ backgroundColor: '#9f75ff' }}
             handleStyle={{ borderColor:'#04d361', borderWidth: 3 }}
@@ -102,6 +116,7 @@ const Player: React.FC = () => {
               onPlay={() => setPlayingState(true)}
               onPause={() => setPlayingState(false)}
               onLoadedMetadata={setupProgressListener}
+              onEnded={handleEpisodeEnded}
             />
           )
         }
