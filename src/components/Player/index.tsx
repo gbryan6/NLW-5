@@ -16,7 +16,11 @@ const Player: React.FC = () => {
     currentEpisodeIndex, 
     isPlaying, 
     togglePlay,
-    setPlayingState
+    setPlayingState,
+    playNext,
+    playPrevious,
+    hasNext,
+    hasPrevious
   } = useContext(playerContext);
 
   useEffect(() => {
@@ -88,7 +92,7 @@ const Player: React.FC = () => {
           <button type="button" disabled={!episode}>
             <img src="/shuffle.svg" alt="Embaralhar" />
           </button>
-          <button type="button" disabled={!episode}>
+          <button type="button" disabled={!episode || !hasPrevious} onClick={() => playPrevious()}>
             <img src="/play-previous.svg" alt="Tocar anterior" />
           </button>
           <button type="button" className={styles.playButton} onClick={togglePlay} disabled={!episode}>
@@ -99,7 +103,7 @@ const Player: React.FC = () => {
 
             }
           </button>
-          <button type="button" disabled={!episode}>
+          <button type="button" disabled={!episode || !hasNext} onClick={() => playNext()}>
             <img src="/play-next.svg" alt="Tocar proxima" />
           </button>
           <button type="button" disabled={!episode}>
