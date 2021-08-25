@@ -2,6 +2,7 @@ import { GetStaticProps } from "next";
 import {  usePlayer } from '../contexts/PlayerContext'
 import Link  from 'next/link';
 import Image from "next/image";
+import Head from "next/head"
 import { api } from "../services/api";
 import ptBR from "date-fns/locale/pt-BR";
 import { format, parseISO } from "date-fns";
@@ -33,6 +34,9 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
 
   return (
     <div className={styles.homePage}>
+      <Head>
+        <title>Home | podcastr</title>
+      </Head>
       <section className={styles.latestEpisodes}>
         <h2>Ultimos lançamentos</h2>
         <ul>
