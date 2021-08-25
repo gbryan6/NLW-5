@@ -1,16 +1,17 @@
 import Image from "next/image";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { usePlayer } from "../../contexts/PlayerContext";
 import Slider from "rc-slider";
 
 import "rc-slider/assets/index.css";
 
 import styles from "./styles.module.scss";
+import { convertDurationToTimeString } from "../../utils/convertDurationString";
 
 const Player: React.FC = () => {
 
   const audioRef = useRef<HTMLAudioElement>(null)
-
+  const [progress, setProgress ] = useState(0)
   const { 
     episodeList, 
     currentEpisodeIndex, 
@@ -26,6 +27,15 @@ const Player: React.FC = () => {
     toggleShuffle,
     isShuffling
   } = usePlayer();
+
+  function setupProgressListener(){
+    audioRef.current.currentTime = 0;
+
+    audioRef.current.addEventListener('timeupdate', () => {
+      setProgress(Math.floor(audioRef.current.currentTime));
+    })
+  }
+
 
   useEffect(() => {
     if(!audioRef.current){
@@ -67,17 +77,19 @@ const Player: React.FC = () => {
 
       <footer className={!episode ? styles.empty : ""}>
         <div className={styles.progress}>
-          <span>00:00</span>
+          <span>{convertDurationToTimeString(progress)}</span>
           <div className={styles.slider}>
             {episode ? 
-            <Slider 
+            <Slider
+            max={episode.duration}
+            value={progress} 
             trackStyle={{ backgroundColor: '#04d361' }} 
             railStyle={{ backgroundColor: '#9f75ff' }}
             handleStyle={{ borderColor:'#04d361', borderWidth: 3 }}
             /> 
             : <div className={styles.emptySlider} />}
           </div>
-          <span>00:00</span>
+          <span>{convertDurationToTimeString(episode?.duration) ?? 0}</span>
         </div>
             
         {
@@ -89,6 +101,7 @@ const Player: React.FC = () => {
               loop={isLooping}
               onPlay={() => setPlayingState(true)}
               onPause={() => setPlayingState(false)}
+              onLoadedMetadata={setupProgressListener}
             />
           )
         }
